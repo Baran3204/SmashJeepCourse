@@ -3,13 +3,19 @@ using UnityEngine;
 
 public class MysteryBoxCollectible : NetworkBehaviour, ICollectible
 {
+
     [Header("References")]
+    [SerializeField] private MysteryBoxSkillsSO[] _skills;
     [SerializeField] private Animator _mysteryBoxAnimator;
     [SerializeField] private Collider _mysteryBoxCollider;
     [Header("Settings")]
     [SerializeField] private float _respawnTimer;
-    public void Collect()
+    public void Collect(PlayerSkillController playerSkillController)
     {
+        if (playerSkillController.HasSkillAlready()) return;
+        MysteryBoxSkillsSO skill = GetRandomSkill();
+        SkillsUI.Instance.SetSkillUI(skill);
+        playerSkillController.SetupSkill(skill);
         CollectRpc();
     }
 
@@ -30,5 +36,10 @@ public class MysteryBoxCollectible : NetworkBehaviour, ICollectible
     {
         _mysteryBoxAnimator.SetTrigger("IsRespawned");
         _mysteryBoxCollider.enabled = true;
+    }
+
+    private MysteryBoxSkillsSO GetRandomSkill()
+    {
+        return _skills[Random.Range(0, _skills.Length)];
     }
 }
