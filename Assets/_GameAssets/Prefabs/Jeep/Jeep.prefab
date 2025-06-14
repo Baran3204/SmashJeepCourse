@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 6402745117103054605}
   - component: {fileID: 7709431653416729721}
   - component: {fileID: 2009102163616433548}
+  - component: {fileID: 656780775811713328}
   - component: {fileID: 1343020416650627994}
   - component: {fileID: 958028268635144646}
   - component: {fileID: 7206741644000602198}
@@ -555,6 +556,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _camera: {fileID: 804013656575911465}
+--- !u!114 &656780775811713328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3896012325177054866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b3b15ae574d5d44b93ded328866676, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!135 &1343020416650627994
 SphereCollider:
   m_ObjectHideFlags: 0
