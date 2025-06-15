@@ -176,6 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _spikeCollider: {fileID: 8404646369235595283}
+  mysteryBoxSkillsSO: {fileID: 11400000, guid: a9d3bcc49f7e11f4f977ab7ad43535d7, type: 2}
 --- !u!65 &8404646369235595283
 BoxCollider:
   m_ObjectHideFlags: 0

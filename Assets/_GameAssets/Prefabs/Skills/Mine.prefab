@@ -292,6 +292,7 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  mysteryBoxSkillsSO: {fileID: 11400000, guid: 115771232a477ca4b8022649a3f4d951, type: 2}
 --- !u!114 &1179206610874818392
 MonoBehaviour:
   m_ObjectHideFlags: 0

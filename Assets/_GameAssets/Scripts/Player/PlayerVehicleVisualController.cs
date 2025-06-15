@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class PlayerVehicleVisualController : NetworkBehaviour
     [SerializeField] private PlayerVehicleController _playerVehicleController;
     [SerializeField] private Transform _wheelFrontLeft, _wheelFrontRight, _wheelBackLeft, _wheelBackRight;
     [SerializeField] private float _wheelSpinSpeed, _wheelYWhenSpringMin, _wheelYWhenSpringMax;
+    [SerializeField] private Transform _jeepVisualTransform;
+    [SerializeField] private Collider _jeepCollider;
 
     private Quaternion _wheelFrontLeftRoll;
     private Quaternion _wheelFrontRigthRoll;
@@ -22,7 +25,15 @@ public class PlayerVehicleVisualController : NetworkBehaviour
         {WheelType.BackLeft, 0f},
         {WheelType.BackRight, 0f}
     };
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) return;
 
+        _playerVehicleController.OnVehicleCrashed += () =>
+        {
+            enabled = false;
+        };
+    }
     private void Start()
     {
         _wheelFrontLeftRoll = _wheelFrontLeft.localRotation;
@@ -91,6 +102,24 @@ public class PlayerVehicleVisualController : NetworkBehaviour
 
         _wheelBackRight.localPosition = new Vector3(_wheelBackRight.localPosition.x,
         _wheelYWhenSpringMin + (_wheelYWhenSpringMax - _wheelYWhenSpringMin) * springBackRigthRatio, _wheelBackRight.localPosition.z);
+    }
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SetJeepVisualActiveRpc(bool active) => _jeepVisualTransform.gameObject.SetActive(active);
 
+    private IEnumerator SetVehicleVisualActiveCourtine(float delay)
+    {
+        SetJeepVisualActiveRpc(false);
+        _jeepCollider.enabled = false;
+
+        yield return new WaitForSeconds(delay);
+
+        SetJeepVisualActiveRpc(true);
+        _jeepCollider.enabled = true;
+        enabled = true;
+    }
+
+    public void SetvehicleActiveCourtine(float delay)
+    {
+        StartCoroutine(SetVehicleVisualActiveCourtine(delay));
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Unity.Netcode;
@@ -5,6 +6,7 @@ using UnityEngine;
 
 public class PlayerVehicleController : NetworkBehaviour
 {
+    public event Action OnVehicleCrashed;
     public class SpringData
     {
         public float _currentLength;
@@ -19,6 +21,9 @@ public class PlayerVehicleController : NetworkBehaviour
     [SerializeField] private VehicleSettingSO _vehicleSettings;
     [SerializeField] private Rigidbody _vehicleRigidbody;
     [SerializeField] private BoxCollider _vehicleCollider;
+    [Header("Crash Settings")]
+    [SerializeField] private float _crashForce;
+    [SerializeField] private float _crashTorque;
 
     private Dictionary<WheelType, SpringData> _springDatas;
     private float _steerInput;
@@ -281,6 +286,16 @@ public class PlayerVehicleController : NetworkBehaviour
         }
     }
 
+    public void CrashVehicle()
+    {
+        OnVehicleCrashed?.Invoke();
+        _vehicleRigidbody.AddForce(Vector3.up * _crashForce, ForceMode.Impulse);
+        _vehicleRigidbody.AddTorque(Vector3.forward * _crashTorque, ForceMode.Impulse);
+
+        enabled = false;
+    }
+
+    public void OnPlayerRespawned() => enabled = true;
     #region Helper Functions
 
     private async void SetOwnerRigidbodyAsync()

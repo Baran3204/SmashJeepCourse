@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Data.Common;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,12 +13,30 @@ public class PlayerSkillController : NetworkBehaviour
     [SerializeField] private bool _hasSkillAlready;
     [Header("Settings")]
     [SerializeField] private float _resetDelay;
+    private PlayerVehicleController _playerVehicleController;
+    private PlayerInteractionController _playerInteractionController;
     private MysteryBoxSkillsSO _mysteryBoxSkill;
     private bool _isSkillUsed;
     private bool _hasTimerStarted;
     private float _timer;
     private int _timerMax;
     private int _mineAmountCounter;
+
+    protected override void OnNetworkPostSpawn()
+    {
+        if (!IsOwner) return;
+        _playerVehicleController = GetComponent<PlayerVehicleController>();
+        _playerInteractionController = GetComponent<PlayerInteractionController>();
+        _playerVehicleController.OnVehicleCrashed += () =>
+        {
+            enabled = false;
+            SkillsUI.Instance.SetSkillToNone();
+
+            _hasTimerStarted = false;
+            _hasSkillAlready = false;
+            SetRocketLauncherActiveRpc(false);
+        };
+    }
     private void Update()
     {
         if (!IsOwner) return;
@@ -34,10 +53,20 @@ public class PlayerSkillController : NetworkBehaviour
 
             if (_timer <= 0f)
             {
+                OnTimerFinished?.Invoke();
                 SkillsUI.Instance.SetSkillToNone();
                 _hasSkillAlready = false;
                 _hasTimerStarted = false;
-                OnTimerFinished?.Invoke();
+
+                switch (_mysteryBoxSkill.SkillType)
+                {
+                    case SkillType.Shield:
+                        _playerInteractionController.SetShieldActive(false);
+                        break;
+                    case SkillType.Spike:
+                        _playerInteractionController.SetSpikeActive(false);
+                        break;
+                }
             }
         }
     }
@@ -63,19 +92,25 @@ public class PlayerSkillController : NetworkBehaviour
         SetRocketLauncherActiveRpc(false);
     }
 
-    public bool HasSkillAlready()
-    {
-        return _hasSkillAlready;
-    }
+    public bool HasSkillAlready() => _hasSkillAlready;
+
     public void ActivateSkill()
     {
         if (!_hasSkillAlready) return;
         SkillManager.Instance.ActivateSkill(_mysteryBoxSkill.SkillType, transform, OwnerClientId);
         SetSkillToNone();
 
-        if (_mysteryBoxSkill.SkillType == SkillType.Rocket)
+        switch (_mysteryBoxSkill.SkillType)
         {
-            StartCoroutine(ResetRocketLauncher());
+            case SkillType.Rocket:
+                StartCoroutine(ResetRocketLauncher());
+                break;
+            case SkillType.Shield:
+                _playerInteractionController.SetShieldActive(true);
+                break;
+            case SkillType.Spike:
+                _playerInteractionController.SetSpikeActive(true);
+                break;
         }
     }
 
@@ -119,5 +154,6 @@ public class PlayerSkillController : NetworkBehaviour
     {
         return _rocketLaunchPoint.position;
     }
-    
+
+    public void OnPlayerRespawned() => enabled = true;
 }

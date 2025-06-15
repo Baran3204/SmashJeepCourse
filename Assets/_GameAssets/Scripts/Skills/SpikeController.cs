@@ -1,15 +1,10 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class SpikeController : NetworkBehaviour
+public class SpikeController : NetworkBehaviour, IDamagables
 {
     [SerializeField] private Collider _spikeCollider;
-    public override void OnNetworkSpawn()
-    {
-        PlayerSkillController.OnTimerFinished += PlayerSkillController_OnTimerFinished;
-        if (IsOwner) SetOwnerVisualsRpc();  
-    }
-
+    [SerializeField] private MysteryBoxSkillsSO mysteryBoxSkillsSO;
     private void PlayerSkillController_OnTimerFinished()
     {
         DestroyRpc();
@@ -22,6 +17,37 @@ public class SpikeController : NetworkBehaviour
             Destroy(gameObject);
         }
     }
+    public override void OnNetworkSpawn()
+    {
+        PlayerSkillController.OnTimerFinished += PlayerSkillController_OnTimerFinished;
+        if (!IsOwner) return;
+
+        SetOwnerVisualsRpc();
+
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(OwnerClientId, out var client))
+        {
+            NetworkObject ownerNetObj = client.PlayerObject;
+            PlayerVehicleController playerVehicleController = ownerNetObj.GetComponent<PlayerVehicleController>();
+            playerVehicleController.OnVehicleCrashed += OnVehicleCrashed;
+        }
+    }
+
+    private void OnVehicleCrashed()
+    {
+        DestroyRpc();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        PlayerSkillController.OnTimerFinished -= PlayerSkillController_OnTimerFinished;
+        if (!IsOwner) return;
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(OwnerClientId, out var client))
+        {
+            NetworkObject ownerNetObj = client.PlayerObject;
+            PlayerVehicleController playerVehicleController = ownerNetObj.GetComponent<PlayerVehicleController>();
+            playerVehicleController.OnVehicleCrashed -= OnVehicleCrashed;
+        }
+    }
 
     [Rpc(SendTo.Owner)]
     private void SetOwnerVisualsRpc()
@@ -29,8 +55,19 @@ public class SpikeController : NetworkBehaviour
         _spikeCollider.enabled = false;
     }
 
-    public override void OnNetworkDespawn()
+    public void Damage(PlayerVehicleController playerVehicleController)
     {
-        PlayerSkillController.OnTimerFinished -= PlayerSkillController_OnTimerFinished;
+        playerVehicleController.CrashVehicle();
+        KillScreenUI.Instance.SetSmashedUI("Baran3204", mysteryBoxSkillsSO.SkillData.RespawnTimer);
+        DestroyRpc();
+    }
+    public ulong GetKillerClientİd()
+    {
+        return OwnerClientId;
+    }
+
+    public int GetRespawnTimer()
+    {
+        return mysteryBoxSkillsSO.SkillData.RespawnTimer;
     }
 }

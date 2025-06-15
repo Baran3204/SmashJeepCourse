@@ -555,6 +555,8 @@ MonoBehaviour:
   _vehicleSettings: {fileID: 11400000, guid: fad06885665bd2741a20798da286c739, type: 2}
   _vehicleRigidbody: {fileID: 7206741644000602198}
   _vehicleCollider: {fileID: 958028268635144646}
+  _crashForce: 300
+  _crashTorque: -150
 --- !u!114 &7709431653416729721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -576,6 +578,8 @@ MonoBehaviour:
   _wheelSpinSpeed: 70
   _wheelYWhenSpringMin: 0.6
   _wheelYWhenSpringMax: 0.3
+  _jeepVisualTransform: {fileID: 4445067406705748160}
+  _jeepCollider: {fileID: 958028268635144646}
 --- !u!114 &2009102163616433548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -704,7 +708,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
   UseRigidBodyForMotion: 0
-  AutoUpdateKinematicState: 1
+  AutoUpdateKinematicState: 0
   AutoSetKinematicOnDespawn: 1
 --- !u!1 &3987305023428100669
 GameObject:
