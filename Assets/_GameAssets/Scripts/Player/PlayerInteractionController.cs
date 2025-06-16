@@ -34,7 +34,7 @@ public class PlayerInteractionController : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (_isCrashed) return;
-
+        if (GameManager.Instance.GetCurrentGameState() != GameState.Playing) return;
         if (other.gameObject.TryGetComponent<ICollectible>(out ICollectible C))
         {
             C.Collect(_playerSkillController);

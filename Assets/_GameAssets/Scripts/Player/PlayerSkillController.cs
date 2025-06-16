@@ -40,6 +40,8 @@ public class PlayerSkillController : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
+        if (!_hasSkillAlready) return;
+        if (GameManager.Instance.GetCurrentGameState() != GameState.Playing) return;
         if (Input.GetKeyDown(KeyCode.Space) && !_isSkillUsed)
         {
             ActivateSkill();
