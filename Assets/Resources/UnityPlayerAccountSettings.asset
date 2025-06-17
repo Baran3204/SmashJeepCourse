@@ -9,7 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89ed629dbcd6ed241b069c39f352ccb4, type: 3}
-  m_Name: Game Data
+  m_Script: {fileID: 11500000, guid: b58a3bc647e70774b8c7225eb3b51e7e, type: 3}
+  m_Name: UnityPlayerAccountSettings
   m_EditorClassIdentifier: 
-  _gameTimer: 300
+  clientId: 
+  scopeMask: 7
+  useCustomDeepLinkUri: 0
+  customScheme: 
+  customHost: 
