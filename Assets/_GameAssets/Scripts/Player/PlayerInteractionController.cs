@@ -8,6 +8,7 @@ public class PlayerInteractionController : NetworkBehaviour
     private PlayerVehicleController _playerVehicleController;
     private PlayerHealthController _playerHealthController;
     private PlayerNetworkController _playerNetworkController;
+    [SerializeField] private CameraShake _cameraShake;
     private bool _isCrashed;
     private bool _isSpikeActive;
     private bool _isShieldActive;
@@ -42,7 +43,7 @@ public class PlayerInteractionController : NetworkBehaviour
         if (GameManager.Instance.GetCurrentGameState() != GameState.Playing) return;
         if (other.gameObject.TryGetComponent<ICollectible>(out ICollectible C))
         {
-            C.Collect(_playerSkillController);
+            C.Collect(_playerSkillController, _cameraShake);
         }
         if (other.gameObject.TryGetComponent<IDamagables>(out IDamagables D))
         {
@@ -52,6 +53,7 @@ public class PlayerInteractionController : NetworkBehaviour
                 return;
             }
             var playerName = _playerNetworkController.PlayerName.Value;
+            _cameraShake.ShakeCamera(3f, 0.8f);
             D.Damage(_playerVehicleController, D.GetKillerName());
             _playerHealthController.TakeDamage(D.GetDamageAmount());
             SetKillerUIRpc(D.GetKillerClientİd(), playerName.ToString(), RpcTarget.Single(D.GetKillerClientİd(), RpcTargetUse.Temp));

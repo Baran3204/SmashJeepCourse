@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 728051963072073088}
   - component: {fileID: 1205636914561623170}
   - component: {fileID: 735468564875945928}
-  m_Layer: 11
+  m_Layer: 7
   m_Name: Hill
   m_TagString: Untagged
   m_Icon: {fileID: 0}

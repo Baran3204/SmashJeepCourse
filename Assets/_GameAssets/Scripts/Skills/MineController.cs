@@ -10,6 +10,7 @@ public class MineController : NetworkBehaviour, IDamagables
     [SerializeField] private float _rayDistance;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private MysteryBoxSkillsSO mysteryBoxSkillsSO;
+    [SerializeField] private GameObject _explosionParticlesPrefab;
 
     private bool _hasLanded;
     private Vector3 _lastSendPos;
@@ -29,7 +30,7 @@ public class MineController : NetworkBehaviour, IDamagables
 
     private void OnVehicleCrashed()
     {
-        DestroyRpc();
+        DestroyRpc(false);
     }
 
     public override void OnNetworkDespawn()
@@ -72,7 +73,7 @@ public class MineController : NetworkBehaviour, IDamagables
     {
         if (other.gameObject.TryGetComponent(out ShieldControlle s))
         {
-            DestroyRpc();
+            DestroyRpc(true);
         }
     }
 
@@ -93,13 +94,22 @@ public class MineController : NetworkBehaviour, IDamagables
     {
         playerVehicleController.CrashVehicle();
         KillScreenUI.Instance.SetSmashedUI(playerName, mysteryBoxSkillsSO.SkillData.RespawnTimer);
-        DestroyRpc();
+        DestroyRpc(true);
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void DestroyRpc()
+   [Rpc(SendTo.ClientsAndHost)]
+    private void DestroyRpc(bool isExp)
     {
-        if (IsServer) Destroy(gameObject);
+        if (IsServer)
+        {
+            if (isExp)
+            {
+                GameObject exp = Instantiate(_explosionParticlesPrefab, transform.position, Quaternion.identity);
+                exp.GetComponent<NetworkObject>().Spawn();
+            }
+            Destroy(gameObject);
+        }
+        
     }
 
     public ulong GetKillerClientİd()

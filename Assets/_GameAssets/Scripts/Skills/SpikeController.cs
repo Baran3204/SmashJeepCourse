@@ -5,6 +5,7 @@ public class SpikeController : NetworkBehaviour, IDamagables
 {
     [SerializeField] private Collider _spikeCollider;
     [SerializeField] private MysteryBoxSkillsSO mysteryBoxSkillsSO;
+    [SerializeField] private GameObject _expPrefab;
     private void PlayerSkillController_OnTimerFinished()
     {
         DestroyRpc();
@@ -16,6 +17,12 @@ public class SpikeController : NetworkBehaviour, IDamagables
         {
             Destroy(gameObject);
         }
+    }
+    [Rpc(SendTo.Server)]
+    private void PlayerParticlesRpc(Vector3 vehiclePos = default)
+    {
+        GameObject exp = Instantiate(_expPrefab, vehiclePos, Quaternion.identity);
+        exp.GetComponent<NetworkObject>().Spawn();
     }
     public override void OnNetworkSpawn()
     {
@@ -58,8 +65,8 @@ public class SpikeController : NetworkBehaviour, IDamagables
     public void Damage(PlayerVehicleController playerVehicleController, string playerName)
     {
         playerVehicleController.CrashVehicle();
+        PlayerParticlesRpc(playerVehicleController.transform.position);
         KillScreenUI.Instance.SetSmashedUI(playerName, mysteryBoxSkillsSO.SkillData.RespawnTimer);
-        DestroyRpc();
     }
     public ulong GetKillerClientİd()
     {

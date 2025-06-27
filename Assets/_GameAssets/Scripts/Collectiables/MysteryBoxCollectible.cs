@@ -10,13 +10,15 @@ public class MysteryBoxCollectible : NetworkBehaviour, ICollectible
     [SerializeField] private Collider _mysteryBoxCollider;
     [Header("Settings")]
     [SerializeField] private float _respawnTimer;
-    public void Collect(PlayerSkillController playerSkillController)
+    public void Collect(PlayerSkillController playerSkillController, CameraShake cameraShake)
     {
         if (playerSkillController.HasSkillAlready()) return;
         MysteryBoxSkillsSO skill = GetRandomSkill();
         SkillsUI.Instance.SetSkillUI(skill);
         playerSkillController.SetupSkill(skill);
         CollectRpc();
+
+        cameraShake.ShakeCamera(0.8f, 0.4f);
     }
 
     [Rpc(SendTo.ClientsAndHost)]

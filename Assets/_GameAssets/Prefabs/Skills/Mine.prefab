@@ -293,6 +293,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   mysteryBoxSkillsSO: {fileID: 11400000, guid: 115771232a477ca4b8022649a3f4d951, type: 2}
+  _explosionParticlesPrefab: {fileID: 7458459148803227231, guid: 737aa618a73ae5a4b97ab447b1b7d10c, type: 3}
 --- !u!114 &1179206610874818392
 MonoBehaviour:
   m_ObjectHideFlags: 0

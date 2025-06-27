@@ -95,6 +95,7 @@ MonoBehaviour:
   _arrowTransform: {fileID: 3793935069250048741}
   _animationDuration: 0.5
   mysteryBoxSkillsSO: {fileID: 11400000, guid: 15fea9364a47f7f4586f6d389bc24968, type: 2}
+  _explosionParticlesPrefab: {fileID: 7458459148803227231, guid: 737aa618a73ae5a4b97ab447b1b7d10c, type: 3}
 --- !u!65 &6859091345210615615
 BoxCollider:
   m_ObjectHideFlags: 0

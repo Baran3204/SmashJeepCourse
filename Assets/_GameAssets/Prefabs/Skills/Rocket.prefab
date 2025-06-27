@@ -212,6 +212,7 @@ MonoBehaviour:
   _movementSpeed: 40
   _rotationSpeed: 300
   mysteryBoxSkillsSO: {fileID: 11400000, guid: 2b05d8aaff0366a418a40723238a2aa7, type: 2}
+  _explosionParticlesPrefab: {fileID: 7458459148803227231, guid: 737aa618a73ae5a4b97ab447b1b7d10c, type: 3}
 --- !u!54 &406814927626788501
 Rigidbody:
   m_ObjectHideFlags: 0

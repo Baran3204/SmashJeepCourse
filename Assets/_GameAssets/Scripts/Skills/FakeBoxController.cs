@@ -11,6 +11,7 @@ public class FakeBoxController : NetworkBehaviour, IDamagables
     [SerializeField] private RectTransform _arrowTransform;
     [SerializeField] private float _animationDuration;
     [SerializeField] private MysteryBoxSkillsSO mysteryBoxSkillsSO;
+    [SerializeField] private GameObject _explosionParticlesPrefab;
 
     private Tween _arrowTween;
     public override void OnNetworkSpawn()
@@ -29,7 +30,7 @@ public class FakeBoxController : NetworkBehaviour, IDamagables
 
     private void OnVehicleCrashed()
     {
-        DestroyRpc();
+        DestroyRpc(false);
     }
 
     [Rpc(SendTo.Owner)]
@@ -44,7 +45,7 @@ public class FakeBoxController : NetworkBehaviour, IDamagables
     {
         if (other.gameObject.TryGetComponent(out ShieldControlle s))
         {
-            DestroyRpc();
+            DestroyRpc(true);
         }
     }
     public override void OnNetworkDespawn()
@@ -64,13 +65,22 @@ public class FakeBoxController : NetworkBehaviour, IDamagables
     {
         playerVehicleController.CrashVehicle();
         KillScreenUI.Instance.SetSmashedUI(playerName, mysteryBoxSkillsSO.SkillData.RespawnTimer);
-        DestroyRpc();
+        DestroyRpc(true);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void DestroyRpc()
+    private void DestroyRpc(bool isExp)
     {
-        if (IsServer) Destroy(gameObject);
+        if (IsServer)
+        {
+            if (isExp)
+            {
+                GameObject exp = Instantiate(_explosionParticlesPrefab, transform.position, Quaternion.identity);
+                exp.GetComponent<NetworkObject>().Spawn();
+            }
+            Destroy(gameObject);
+        }
+        
     }
 
     public ulong GetKillerClientİd()

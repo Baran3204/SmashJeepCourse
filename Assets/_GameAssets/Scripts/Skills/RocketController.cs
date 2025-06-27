@@ -6,6 +6,7 @@ public class RocketController : NetworkBehaviour, IDamagables
     [SerializeField] private float _movementSpeed;
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private MysteryBoxSkillsSO mysteryBoxSkillsSO;
+    [SerializeField] private GameObject _explosionParticlesPrefab;
     private bool _isMoving;
 
     [Rpc(SendTo.Owner)]
@@ -24,7 +25,7 @@ public class RocketController : NetworkBehaviour, IDamagables
     {
         if (other.gameObject.TryGetComponent(out ShieldControlle s))
         {
-            DestroyRpc();
+            DestroyRpc(true, s.transform.position);
         }
     }
     public override void OnNetworkSpawn()
@@ -44,7 +45,7 @@ public class RocketController : NetworkBehaviour, IDamagables
 
     private void OnVehicleCrashed()
     {
-        DestroyRpc();
+        DestroyRpc(false);
     }
 
     public override void OnNetworkDespawn()
@@ -72,13 +73,22 @@ public class RocketController : NetworkBehaviour, IDamagables
     {
         playerVehicleController.CrashVehicle();
         KillScreenUI.Instance.SetSmashedUI(playerName, mysteryBoxSkillsSO.SkillData.RespawnTimer);
-        DestroyRpc();
+        DestroyRpc(true, playerVehicleController.transform.position);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void DestroyRpc()
+    private void DestroyRpc(bool isExp, Vector3 vehiclePos = default)
     {
-        if (IsServer) Destroy(gameObject);
+        if (IsServer)
+        {
+            if (isExp)
+            {
+                GameObject exp = Instantiate(_explosionParticlesPrefab, vehiclePos, Quaternion.identity);
+                exp.GetComponent<NetworkObject>().Spawn();
+            }
+            Destroy(gameObject);
+        }
+        
     }
     public ulong GetKillerClientİd()
     {
