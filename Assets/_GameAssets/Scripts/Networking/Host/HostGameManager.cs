@@ -45,47 +45,45 @@ public class HostGameManager : IDisposable
 
         try
         {
+           CreateLobbyOptions createLobbyOptions = new();
+           createLobbyOptions.IsPrivate = false;
+           createLobbyOptions.Data = new Dictionary<string, DataObject>()
+           {
+               {
+                   "JoinCode", new DataObject
+                   (
+                       visibility: DataObject.VisibilityOptions.Member,
+                       value: _joinCode
+                   )
+               }
+           };
 
-            CreateLobbyOptions createLobbyOptions = new();
-            createLobbyOptions.IsPrivate = false;
-            createLobbyOptions.Data = new Dictionary<string, DataObject>()
-            {
-                {
-                    "JoinCode", new DataObject
-                    (
-                        visibility: DataObject.VisibilityOptions.Member,
-                        value: _joinCode
-                    )
-                }
-            };
+           string PlayerName = PlayerPrefs.GetString("PlayerName", "NoName");
+           Lobby lobby = await LobbyService.Instance.CreateLobbyAsync($"{PlayerName}'s Lobby", 4, createLobbyOptions);
+           _lobbyId = lobby.Id;
 
-            string PlayerName = PlayerPrefs.GetString("PlayerName", "NoName");
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync($"{PlayerName}'s Lobby", 4, createLobbyOptions);
-            _lobbyId = lobby.Id;
-
-            HostSingleton.Instance.StartCoroutine(HeartBeatLobby(15));
+           HostSingleton.Instance.StartCoroutine(HeartBeatLobby(15));
         }
         catch (LobbyServiceException exc)
         {
             Debug.LogError(exc);
             return;
         }
-
-        NetworkServer networkServer = new(NetworkManager.Singleton);
-
+        
+        NetworkServer = new(NetworkManager.Singleton);
         UserData userData = new UserData
         {
             UserName = PlayerPrefs.GetString("PlayerName", "NoName"),
             UserAuthId = AuthenticationService.Instance.PlayerId
         };
-
+    
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
         NetworkManager.Singleton.StartHost();
 
-        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("CharacterSelectorScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     private IEnumerator HeartBeatLobby(float time)
@@ -98,7 +96,10 @@ public class HostGameManager : IDisposable
             yield return delay;
         }
     }
-
+    public string GetJoinCode()
+    {
+        return _joinCode;
+    }
     public async void Shutdown()
     {
         HostSingleton.Instance.StopCoroutine(nameof(HeartBeatLobby));

@@ -16,6 +16,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private float _animDuration;
     [SerializeField] private GameObject _lobbiesParent;
     [SerializeField] private TMP_InputField _joinCode;
+    [SerializeField] private TMP_Text _welcomeText;
 
     private void Awake()
     {
@@ -35,16 +36,21 @@ public class MainMenuUI : MonoBehaviour
             {
                 _lobbiesParent.SetActive(false);
             });
-        }); 
+        });
     }
 
     private async void StartClient()
     {
         await ClientSingleton.Instance.GetClientGameManager().StartClientAsycn(_joinCode.text);
     }
+    private void OnEnable()
+    {
+        var playerName = PlayerPrefs.GetString("PlayerName");
 
+        _welcomeText.text = $"Welcome, <color=yellow>{playerName}</color>";
+    }
     private async void StartHost()
     {
-        await HostSingleton.Instance.GetHostGameManager().StartHostAsync();
+        await HostSingleton.Instance._hostGameManager.StartHostAsync();
     }
 }

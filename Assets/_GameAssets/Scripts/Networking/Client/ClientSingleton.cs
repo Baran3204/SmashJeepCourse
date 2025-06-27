@@ -37,7 +37,6 @@ public class ClientSingleton : MonoBehaviour
     {
         return _clientGameManager;
     }
-
     private void OnDestroy()
     {
         _clientGameManager?.Dispose();

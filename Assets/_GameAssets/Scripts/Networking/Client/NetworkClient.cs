@@ -21,7 +21,7 @@ public class NetworkClient : IDisposable
         Disconnet();
     }
 
-    private void Disconnet()
+    public void Disconnet()
     {
         if (SceneManager.GetActiveScene().name != "MenuScene")
         {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -30,14 +31,22 @@ public class SpawnerManager : NetworkBehaviour
             _availableRespawnIndexList.Add(i);
         }
 
-        NetworkManager.OnClientConnectedCallback += SpawnPlayer;
+        SpawnAllPlayers();
     }
 
     private void Awake()
     {
         Instance = this;    
     }
+    private void SpawnAllPlayers()
+    {
+        if (!IsServer) return;
 
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            SpawnPlayer(client.ClientId);
+        }
+    }
     private void SpawnPlayer(ulong clientID)
     {
         if (_availableSpawnIndexList.Count == 0)

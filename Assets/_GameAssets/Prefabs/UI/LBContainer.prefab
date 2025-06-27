@@ -357,6 +357,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3224801253271770014}
+  - component: {fileID: 4584307519068822569}
   m_Layer: 5
   m_Name: LBContainer
   m_TagString: Untagged
@@ -386,6 +387,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4584307519068822569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4010879473128457775}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7ebca3e513e654d80391431f1ace9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rankText: {fileID: 1246294846393560730}
+  _nameText: {fileID: 182834050903314532}
+  _scoreText: {fileID: 1932589207660063590}
+  _ownerColor: {r: 1, g: 0.9607843, b: 0, a: 1}
 --- !u!1 &7500023524731102873
 GameObject:
   m_ObjectHideFlags: 0

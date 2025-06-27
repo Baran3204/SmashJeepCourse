@@ -629,8 +629,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Welcome, <color=yellow>Baran</color>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d9f47171c92652046904b8c9251746e1, type: 2}
+  m_sharedMaterial: {fileID: 7297564348123691643, guid: d9f47171c92652046904b8c9251746e1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1686,6 +1686,7 @@ MonoBehaviour:
   _animDuration: 0.5
   _lobbiesParent: {fileID: 1150157617}
   _joinCode: {fileID: 1483461055}
+  _welcomeText: {fileID: 339264719}
 --- !u!1 &763885180
 GameObject:
   m_ObjectHideFlags: 0

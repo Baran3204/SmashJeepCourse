@@ -3,7 +3,7 @@ using UnityEngine;
 public class HostSingleton : MonoBehaviour
 {
     private static HostSingleton instance;
-    private HostGameManager _hostGameManager;
+    public HostGameManager _hostGameManager;
     public static HostSingleton Instance
     {
         get
@@ -13,7 +13,7 @@ public class HostSingleton : MonoBehaviour
 
             if (instance == null)
             {
-                Debug.LogError("No ClientSingleton in the scene");
+                Debug.LogError("No HostSingleton in the scene");
                 return null;
             }
 
@@ -29,11 +29,6 @@ public class HostSingleton : MonoBehaviour
     {
         _hostGameManager = new();
     }
-    public HostGameManager GetHostGameManager()
-    {
-        return _hostGameManager;
-    }
-
     private void OnDestroy()
     {
         _hostGameManager?.Dispose();

@@ -68,10 +68,10 @@ public class RocketController : NetworkBehaviour, IDamagables
         transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime, Space.Self);
     }
 
-    public void Damage(PlayerVehicleController playerVehicleController)
+    public void Damage(PlayerVehicleController playerVehicleController, string playerName)
     {
         playerVehicleController.CrashVehicle();
-        KillScreenUI.Instance.SetSmashedUI("Baran3204", mysteryBoxSkillsSO.SkillData.RespawnTimer);
+        KillScreenUI.Instance.SetSmashedUI(playerName, mysteryBoxSkillsSO.SkillData.RespawnTimer);
         DestroyRpc();
     }
 
@@ -88,5 +88,23 @@ public class RocketController : NetworkBehaviour, IDamagables
     public int GetRespawnTimer()
     {
         return mysteryBoxSkillsSO.SkillData.RespawnTimer;
+    }
+
+    public int GetDamageAmount()
+    {
+        return mysteryBoxSkillsSO.SkillData.DamageAmount;
+    }
+
+    public string GetKillerName()
+    {
+        ulong killerClientId = GetKillerClientİd();
+
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(killerClientId, out var killerClient))
+        {
+            string playerName = killerClient.PlayerObject.GetComponent<PlayerNetworkController>().PlayerName.Value.ToString();
+            return playerName;
+        }
+
+        return string.Empty;
     }
 }

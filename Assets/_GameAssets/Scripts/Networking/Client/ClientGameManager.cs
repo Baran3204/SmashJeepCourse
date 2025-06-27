@@ -13,6 +13,7 @@ public class ClientGameManager : IDisposable
 {
     private NetworkClient _networkClient;
     private JoinAllocation _joinAllocation;
+    private string _joinCode;
     public async UniTask<bool> İnitAsycn()
     {
         await UnityServices.InitializeAsync();
@@ -58,11 +59,23 @@ public class ClientGameManager : IDisposable
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
-        NetworkManager.Singleton.StartClient();   
+        NetworkManager.Singleton.StartClient();
     }
-
+    public void SetJoinCode(string code)
+    {
+        _joinCode = code;
+    }
+    public string GetJoinCode()
+    {
+        return _joinCode;
+    }
     public void Dispose()
     {
         _networkClient?.Dispose();
+    }
+
+    public void Disconnect()
+    {
+        _networkClient.Disconnet();
     }
 }
